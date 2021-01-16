@@ -9,16 +9,12 @@ public class Player : MonoBehaviour
     private NavMeshAgent agent;
     // получаем маску, которая затрагивает только слой Player
     static int layerMaskOnlyBuilding;
-    static int layerMaskOnlyPlayer;
     // получаем маску, которая затрагивает все слои, кроме слоя Player
-    private int layerMasForRaycast;
+    private int layerMaskWithoutBuilding;
     private void Awake()
     {
         layerMaskOnlyBuilding = 1 << LayerMask.NameToLayer("Building");
-        layerMaskOnlyPlayer = 1 << LayerMask.NameToLayer("Player");
-        layerMasForRaycast = ~layerMaskOnlyBuilding;
-        layerMasForRaycast = ~layerMaskOnlyPlayer;
-
+        layerMaskWithoutBuilding = ~layerMaskOnlyBuilding;
     }
     void Start()
     {
@@ -31,7 +27,7 @@ public class Player : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
-            if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, layerMasForRaycast))
+            if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, layerMaskWithoutBuilding))
             {
                 agent.SetDestination(hit.point);
             }
