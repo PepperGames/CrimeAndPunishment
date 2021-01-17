@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,6 +14,8 @@ public class FollowCamera : MonoBehaviour
     private float CapsuleCastDistance;
     private List<InterferingObject> interferingObjects = new List<InterferingObject>();
 
+    public Mesh mesh;
+    public Material material;
     // получаем маску, которая затрагивает только слой Building
     static int layerMaskOnlyBuilding;
 
@@ -32,7 +35,8 @@ public class FollowCamera : MonoBehaviour
         все новые сделать невидимыми
          */
         RaycastHit[] hits;
-        hits = Physics.CapsuleCastAll(transform.position, player.position, CapsuleCastRadius, transform.forward, Vector3.Distance(transform.position, player.position), layerMaskOnlyBuilding);
+        hits = Physics.CapsuleCastAll( player.position, transform.position, CapsuleCastRadius, transform.forward, Vector3.Distance(transform.position, player.position), layerMaskOnlyBuilding);
+        hits = hits.Where(val => val.collider.gameObject.transform.position.z < player.transform.position.z).ToArray();
         if (interferingObjects.Count > 0 && interferingObjects != null)
         {
             foreach (InterferingObject io in interferingObjects)
@@ -64,7 +68,6 @@ public class FollowCamera : MonoBehaviour
         }
         if (interferingObjects.Count > 0 && interferingObjects != null)
         {
-
             for (int i = 0; i < interferingObjects.Count; i++)
             {
                 if (interferingObjects[i].status == "old")
@@ -103,13 +106,24 @@ public class FollowCamera : MonoBehaviour
         Gizmos.color = Color.red;
         Vector3 direction = player.position;
         Gizmos.DrawLine(transform.position, direction);
+        DrowCapsule();
     }
-
+    void DrowCapsule()
+    {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(player.transform.position, CapsuleCastRadius);
+            Gizmos.DrawSphere(transform.position, CapsuleCastRadius);
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(new Vector3(transform.position.x + CapsuleCastRadius, transform.position.y, transform.position.z), new Vector3(player.transform.position.x + CapsuleCastRadius, player.transform.position.y, player.transform.position.z));
+            Gizmos.DrawLine(new Vector3(transform.position.x, transform.position.y + CapsuleCastRadius, transform.position.z), new Vector3(player.transform.position.x, player.transform.position.y + CapsuleCastRadius, player.transform.position.z));
+            Gizmos.DrawLine(new Vector3(transform.position.x - CapsuleCastRadius, transform.position.y, transform.position.z), new Vector3(player.transform.position.x - CapsuleCastRadius, player.transform.position.y, player.transform.position.z));
+            Gizmos.DrawLine(new Vector3(transform.position.x, transform.position.y - CapsuleCastRadius, transform.position.z), new Vector3(player.transform.position.x, player.transform.position.y - CapsuleCastRadius, player.transform.position.z));
+            Gizmos.DrawLine(new Vector3(transform.position.x, transform.position.y, transform.position.z + CapsuleCastRadius), new Vector3(player.transform.position.x, player.transform.position.y, player.transform.position.z + CapsuleCastRadius));
+            Gizmos.DrawLine(new Vector3(transform.position.x, transform.position.y, transform.position.z - CapsuleCastRadius), new Vector3(player.transform.position.x, player.transform.position.y, player.transform.position.z - CapsuleCastRadius));
+    }
     //камера следует за игроком
     void LateUpdate()
     {
         transform.position = Vector3.Lerp(transform.position, player.position + offset, Time.deltaTime * smooth);
     }
-
-
 }
