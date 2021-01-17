@@ -19,6 +19,15 @@ public class FollowCamera : MonoBehaviour
     // получаем маску, которая затрагивает только слой Building
     static int layerMaskOnlyBuilding;
 
+    [SerializeField]
+    float leftLimit;
+    [SerializeField]
+    float rightLimit;
+    [SerializeField]
+    float bottomLimit;
+    [SerializeField]
+    float upperLimit;
+
     private void Awake()
     {
         layerMaskOnlyBuilding = 1 << LayerMask.NameToLayer("Building");
@@ -77,7 +86,10 @@ public class FollowCamera : MonoBehaviour
                 }
             }
         }
+
+        
     }
+
     //вспомогательный класс который содержит обьект который должен быть невидимым
     private class InterferingObject
     {
@@ -100,6 +112,7 @@ public class FollowCamera : MonoBehaviour
             status = "checked";
         }
     }
+
     void OnDrawGizmos()
     {
         // Draws a 5 unit long red line in front of the object
@@ -107,7 +120,9 @@ public class FollowCamera : MonoBehaviour
         Vector3 direction = player.position;
         Gizmos.DrawLine(transform.position, direction);
         DrowCapsule();
+        DrowCameraBorder();
     }
+
     void DrowCapsule()
     {
             Gizmos.color = Color.yellow;
@@ -121,9 +136,24 @@ public class FollowCamera : MonoBehaviour
             Gizmos.DrawLine(new Vector3(transform.position.x, transform.position.y, transform.position.z + CapsuleCastRadius), new Vector3(player.transform.position.x, player.transform.position.y, player.transform.position.z + CapsuleCastRadius));
             Gizmos.DrawLine(new Vector3(transform.position.x, transform.position.y, transform.position.z - CapsuleCastRadius), new Vector3(player.transform.position.x, player.transform.position.y, player.transform.position.z - CapsuleCastRadius));
     }
+    void DrowCameraBorder()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(new Vector3(leftLimit,10,upperLimit), new Vector3(rightLimit,10,upperLimit));
+        Gizmos.DrawLine(new Vector3(leftLimit,10,bottomLimit), new Vector3(rightLimit,10,bottomLimit));
+        Gizmos.DrawLine(new Vector3(leftLimit,10,upperLimit), new Vector3(leftLimit, 10, bottomLimit));
+        Gizmos.DrawLine(new Vector3(rightLimit, 10,upperLimit), new Vector3(rightLimit,10, bottomLimit));
+    }
     //камера следует за игроком
     void LateUpdate()
     {
         transform.position = Vector3.Lerp(transform.position, player.position + offset, Time.deltaTime * smooth);
+        //границы для камеры
+        transform.position = new Vector3
+            (
+            Mathf.Clamp(transform.position.x, leftLimit, rightLimit),
+            transform.position.y,
+            Mathf.Clamp(transform.position.z, bottomLimit, upperLimit)
+            );
     }
 }
