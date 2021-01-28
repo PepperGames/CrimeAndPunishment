@@ -1,0 +1,75 @@
+{
+    "удалить": "https://docs.google.com/document/d/1AXcsnuePTVci6mxIDesk_IpnDZHtEZm5CbGjU16jrek/edit?usp=sharing",
+    "questName1": {
+        "npcName-stage1": {
+            "dialogStatus":"dialog",
+            "repeatPhrase": "сходи бухни, не трогай меня",
+            "phrase1": [
+                {
+                    "npcSays": "могу чем то помочь?",
+                    "responseTime": null
+                },
+                {
+                    "option": "как пройти к таверне?",
+                    "linkPath": "phrase2",
+                    "type":"gray"
+                },
+                {
+                    "option": "как пройти на мост?",
+                    "linkPath": "phrase3",
+                    "type":"gray"
+                },
+                {
+                    "option": "увидимся",
+                    "linkPath": "phrase5",
+                    "type":"normal"
+                }
+            ],
+            "phrase2": [
+                {
+                    "npcSays": "к таверне прямо и направо",
+                    "responseTime": 30
+                },
+                {
+                    "option": "какое бухлишко там посоветуешь?",
+                    "linkPath": "phrase4",
+                    "type":"normal"
+                },
+                {
+                    "option": "я понял",
+                    "linkPath": "phrase3",
+                    "type":"normal"
+                }
+            ],
+            "phrase3": [
+                {
+                    "npcSays": "на мост 3 квартала на север",
+                    "responseTime": null
+                },
+                {
+                    "option": "понятно",
+                    "linkPath": "phrase1",
+                    "type":"normal"
+                }
+            ],
+            "phrase4": [
+                {
+                    "npcSays": "пивас нормас",
+                    "responseTime": null
+                },
+                {
+                    "option": "спасибо",
+                    "linkPath": "phrase1",
+                    "type":"normal"
+                }
+            ],
+            "phrase5": [
+                {
+                    "npcSays": "до встречи",
+                    "responseTime": null,
+                    "type":"normal"
+                }
+            ]
+        }
+    }
+}
